@@ -5,4 +5,4 @@ const Providers = ({ children }: { children: ReactNode }) => {
   return <Router>{children}</Router>;
 };
 
-export default Providers;
+export { Providers };

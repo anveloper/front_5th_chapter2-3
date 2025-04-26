@@ -1,7 +1,7 @@
 import PostsManagerPage from "../pages/PostsManagerPage.tsx";
 import Footer from "../widgets/ui/Footer.tsx";
 import Header from "../widgets/ui/Header.tsx";
-import Providers from "./providers";
+import { Providers } from "./providers";
 import "./styles/global.css";
 
 const App = () => {
