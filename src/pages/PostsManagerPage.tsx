@@ -41,6 +41,9 @@ type User = {
   id: number;
   username: string;
   image: string;
+};
+
+type UserWithDetail = User & {
   firstName?: string;
   lastName?: string;
   age?: number;
@@ -59,11 +62,13 @@ type Post = {
     likes?: number;
     dislikes?: number;
   };
+  views: number;
   userId: number;
-  author: User;
 };
 
-type NewPost = Omit<Post, "id" | "tags" | "reactions" | "author">;
+type NewPost = Omit<Post, "id" | "tags" | "reactions" | "views">;
+
+type PostWithAuthor = Post & { author: User };
 
 type Tag = {
   slug: string;
@@ -76,9 +81,23 @@ type Comment = {
   body: string;
   likes: number;
   user: User;
-  userId?: User["id"];
+  userId: User["id"];
 };
 type NewComment = Omit<Comment, "id" | "user" | "likes">;
+
+type PostsData = {
+  posts: Post[];
+  total: number;
+  skip: number;
+  limit: number;
+};
+
+type UsersData = {
+  users: User[];
+  total: number;
+  skip: number;
+  limit: number;
+};
 
 const PostsManager = () => {
   const navigate = useNavigate();
@@ -86,7 +105,7 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<PostWithAuthor[]>([]);
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
@@ -107,7 +126,7 @@ const PostsManager = () => {
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [selectedUser, setSelectedUser] = useState<UserWithDetail | null>(null);
 
   // URL 업데이트 함수
   const updateURL = () => {
@@ -124,7 +143,7 @@ const PostsManager = () => {
   // 게시물 가져오기
   const fetchPosts = () => {
     setLoading(true);
-    let postsData: { posts: Post[]; total: number };
+    let postsData: PostsData;
     let usersData: User[];
 
     fetch(`/api/posts?limit=${limit}&skip=${skip}`)
@@ -134,12 +153,12 @@ const PostsManager = () => {
         return fetch("/api/users?limit=0&select=username,image");
       })
       .then((response) => response.json())
-      .then((users) => {
+      .then((users: UsersData) => {
         usersData = users.users;
 
-        const postsWithUsers: Post[] = postsData.posts.map((post) => {
+        const postsWithUsers: PostWithAuthor[] = postsData.posts.map((post) => {
           const author = usersData.find((user) => user.id === post.userId);
-          if (!author) return { ...post };
+          if (!author) throw new Error("wrong author");
           return { ...post, author };
         });
 
@@ -198,9 +217,9 @@ const PostsManager = () => {
       const postsData = (await postsResponse.json()) as { posts: Post[]; total: number };
       const usersData = (await usersResponse.json()) as { users: User[] };
 
-      const postsWithUsers: Post[] = postsData.posts.map((post) => {
+      const postsWithUsers: PostWithAuthor[] = postsData.posts.map((post) => {
         const author = usersData.users.find((user) => user.id === post.userId);
-        if (!author) return { ...post };
+        if (!author) throw new Error("wrong author");
         return { ...post, author };
       });
 
@@ -378,7 +397,8 @@ const PostsManager = () => {
       fetchPosts();
     }
     updateURL();
-  }, [skip, limit, sortBy, sortOrder, selectedTag]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [skip, limit, sortBy, sortOrder, selectedTag]); // TODO 수정예정
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
