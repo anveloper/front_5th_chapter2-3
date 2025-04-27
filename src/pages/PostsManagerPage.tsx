@@ -1,7 +1,10 @@
 import { Comment, NewComment } from "@/entities/comment/models/comment.types";
-import { NewPost, Post } from "@/entities/post/models/post.types";
+import type { Post, PostWithAuthor } from "@/entities/post/models";
+import { usePostContext } from "@/entities/post/models";
 import { User, UserWithDetail } from "@/entities/user/models/user.types";
 
+import { AddPostDialog } from "@/widgets/post/ui/AddPostDialog";
+import { EditPostDialog } from "@/widgets/post/ui/EditPostDialog";
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -30,7 +33,6 @@ import {
   Textarea,
 } from "../shared/ui";
 
-type PostWithAuthor = Post & { author: User };
 type CommentWithUser = Comment & { user: User };
 type Tag = {
   slug: string;
@@ -57,27 +59,35 @@ const PostsManager = () => {
   const queryParams = new URLSearchParams(location.search);
 
   // 상태 관리
-  const [posts, setPosts] = useState<PostWithAuthor[]>([]);
+  const { posts, setPosts } = usePostContext();
   const [total, setTotal] = useState(0);
   const [skip, setSkip] = useState(parseInt(queryParams.get("skip") || "0"));
   const [limit, setLimit] = useState(parseInt(queryParams.get("limit") || "10"));
   const [searchQuery, setSearchQuery] = useState(queryParams.get("search") || "");
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+
+  const [selectedPost, setSelectedPost] = useState<PostWithAuthor | null>(null);
+
   const [sortBy, setSortBy] = useState(queryParams.get("sortBy") || "");
   const [sortOrder, setSortOrder] = useState(queryParams.get("sortOrder") || "asc");
+
   const [showAddDialog, setShowAddDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
-  const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
+
   const [loading, setLoading] = useState(false);
+
   const [tags, setTags] = useState<Tag[]>([]);
+
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
+
   const [comments, setComments] = useState<{ [key: Post["id"]]: CommentWithUser[] }>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 });
+
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
   const [showEditCommentDialog, setShowEditCommentDialog] = useState(false);
   const [showPostDetailDialog, setShowPostDetailDialog] = useState(false);
   const [showUserModal, setShowUserModal] = useState(false);
+
   const [selectedUser, setSelectedUser] = useState<UserWithDetail | null>(null);
 
   // URL 업데이트 함수
@@ -183,38 +193,10 @@ const PostsManager = () => {
     setLoading(false);
   };
 
-  // 게시물 추가
-  const addPost = async () => {
-    try {
-      const response = await fetch("/api/posts/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newPost),
-      });
-      const data = await response.json();
-      setPosts([data, ...posts]);
-      setShowAddDialog(false);
-      setNewPost({ title: "", body: "", userId: 1 });
-    } catch (error) {
-      console.error("게시물 추가 오류:", error);
-    }
-  };
-
   // 게시물 업데이트
-  const updatePost = async () => {
-    try {
-      if (!selectedPost) return;
-      const response = await fetch(`/api/posts/${selectedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(selectedPost),
-      });
-      const data = await response.json();
-      setPosts(posts.map((post) => (post.id === data.id ? data : post)));
-      setShowEditDialog(false);
-    } catch (error) {
-      console.error("게시물 업데이트 오류:", error);
-    }
+  const updatePost = (updatedPost: PostWithAuthor) => {
+    setPosts(posts.map((post) => (updatedPost.id === post.id ? updatedPost : post)));
+    setShowEditDialog(false);
   };
 
   // 게시물 삭제
@@ -320,7 +302,7 @@ const PostsManager = () => {
   };
 
   // 게시물 상세 보기
-  const openPostDetail = (post: Post) => {
+  const openPostDetail = (post: PostWithAuthor) => {
     setSelectedPost(post);
     fetchComments(post.id);
     setShowPostDetailDialog(true);
@@ -606,56 +588,15 @@ const PostsManager = () => {
       </CardContent>
 
       {/* 게시물 추가 대화상자 */}
-      <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>새 게시물 추가</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={newPost.title}
-              onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <Textarea
-              rows={30}
-              placeholder="내용"
-              value={newPost.body}
-              onChange={(e) => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <Input
-              type="number"
-              placeholder="사용자 ID"
-              value={newPost.userId}
-              onChange={(e) => setNewPost({ ...newPost, userId: Number(e.target.value) })}
-            />
-            <Button onClick={addPost}>게시물 추가</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <AddPostDialog open={showAddDialog} onOpenChange={setShowAddDialog} />
 
       {/* 게시물 수정 대화상자 */}
-      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>게시물 수정</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              placeholder="제목"
-              value={selectedPost?.title || ""}
-              onChange={(e) => setSelectedPost((prev) => (prev ? { ...prev, title: e.target.value } : null))}
-            />
-            <Textarea
-              rows={15}
-              placeholder="내용"
-              value={selectedPost?.body || ""}
-              onChange={(e) => setSelectedPost((prev) => (prev ? { ...prev, body: e.target.value } : null))}
-            />
-            <Button onClick={updatePost}>게시물 업데이트</Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EditPostDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        post={selectedPost}
+        onUpdate={updatePost}
+      />
 
       {/* 댓글 추가 대화상자 */}
       <Dialog open={showAddCommentDialog} onOpenChange={setShowAddCommentDialog}>
