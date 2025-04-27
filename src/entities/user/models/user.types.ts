@@ -1,9 +1,3 @@
-type User = {
-  id: number;
-  username: string;
-  image: string;
-};
-
 type Address = {
   address: string;
   city: string;
@@ -15,7 +9,11 @@ type Company = {
   title: string;
 };
 
-type UserWithDetail = User & {
+type User = {
+  id: number;
+  username: string;
+  image: string;
+  // detail
   firstName?: string;
   lastName?: string;
   age?: number;
@@ -25,4 +23,4 @@ type UserWithDetail = User & {
   company?: Company;
 };
 
-export type { User, UserWithDetail };
+export type { User };

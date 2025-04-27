@@ -13,10 +13,14 @@ type Post = {
   reactions?: Reaction;
   views: number;
   userId: number;
+  author?: User;
 };
 
 type NewPost = Omit<Post, "id" | "tags" | "reactions" | "views">;
 
-type PostWithAuthor = Post & { author: User };
+type Tag = {
+  slug: string;
+  url: string;
+};
 
-export type { NewPost, Post, PostWithAuthor };
+export type { NewPost, Post, Tag };
