@@ -151,6 +151,16 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip, limit, sortBy, sortOrder, selectedTag]); // TODO 수정예정
 
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSkip(parseInt(params.get("skip") || "0"));
+    setLimit(parseInt(params.get("limit") || "10"));
+    setSearchQuery(params.get("search") || "");
+    setSortBy(params.get("sortBy") || "");
+    setSortOrder(params.get("sortOrder") || "asc");
+    setSelectedTag(params.get("tag") || "");
+  }, [location.search]);
+
   const value = {
     posts,
     setPosts,

@@ -5,13 +5,12 @@ import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { usePostContext } from "@/features/posts/models/use-post-context";
 import { AddPostDialog } from "@/features/posts/ui/AddPostDialog";
 import { EditPostDialog } from "@/features/posts/ui/EditPostDialog";
+import { PostsPagination } from "@/features/posts/ui/PostsPagination";
+import { PostsSearchHeader } from "@/features/posts/ui/PostsSearchHeader";
+import { PostsTable } from "@/features/posts/ui/PostsTable";
 import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-test";
-import { PostsSearchHeader } from "@/widgets/post/ui/PostsSearchHeader";
-import { PostsTable } from "@/widgets/post/ui/PostsTable";
 import { Edit2, Plus, ThumbsUp, Trash2 } from "lucide-react";
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import {
   Button,
   Card,
@@ -22,31 +21,12 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Textarea,
 } from "../shared/ui";
 
 const PostsManager = () => {
-  const location = useLocation();
-
   // 상태 관리
-  const {
-    selectedPost,
-    total,
-    skip,
-    setSkip,
-    limit,
-    setLimit,
-    searchQuery,
-    setSearchQuery,
-    setSortBy,
-    setSortOrder,
-    setSelectedTag,
-  } = usePostContext();
+  const { selectedPost, searchQuery } = usePostContext();
 
   const {
     showAddCommentDialog,
@@ -150,17 +130,6 @@ const PostsManager = () => {
     }
   };
 
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    setSkip(parseInt(params.get("skip") || "0"));
-    setLimit(parseInt(params.get("limit") || "10"));
-    setSearchQuery(params.get("search") || "");
-    setSortBy(params.get("sortBy") || "");
-    setSortOrder(params.get("sortOrder") || "asc");
-    setSelectedTag(params.get("tag") || "");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location.search]);
-
   // 댓글 렌더링
   const renderComments = (postId: Post["id"]) => (
     <div className="mt-2">
@@ -229,32 +198,8 @@ const PostsManager = () => {
           <PostsSearchHeader />
           {/* 게시물 테이블 */}
           <PostsTable />
-
           {/* 페이지네이션 */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span>표시</span>
-              <Select value={limit.toString()} onValueChange={(value) => setLimit(Number(value))}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="10" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="20">20</SelectItem>
-                  <SelectItem value="30">30</SelectItem>
-                </SelectContent>
-              </Select>
-              <span>항목</span>
-            </div>
-            <div className="flex gap-2">
-              <Button disabled={skip === 0} onClick={() => setSkip(Math.max(0, skip - limit))}>
-                이전
-              </Button>
-              <Button disabled={skip + limit >= total} onClick={() => setSkip(skip + limit)}>
-                다음
-              </Button>
-            </div>
-          </div>
+          <PostsPagination />
         </div>
       </CardContent>
 
