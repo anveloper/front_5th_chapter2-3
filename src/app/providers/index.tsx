@@ -1,12 +1,18 @@
 import { ReactNode } from "react";
-import { BrowserRouter as Router } from "react-router-dom";
+import { CommentProvider } from "./CommentProvider";
+import { DialogProvider } from "./DialogProvider";
 import { PostProvider } from "./PostProvider";
+import { UserProvider } from "./UserProvider";
 
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
-    <Router>
-      <PostProvider>{children}</PostProvider>
-    </Router>
+    <PostProvider>
+      <CommentProvider>
+        <UserProvider>
+          <DialogProvider>{children}</DialogProvider>
+        </UserProvider>
+      </CommentProvider>
+    </PostProvider>
   );
 };
 
