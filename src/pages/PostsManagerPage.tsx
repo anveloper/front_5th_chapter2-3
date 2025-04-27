@@ -1,3 +1,7 @@
+import { Comment, NewComment } from "@/entities/comment/models/comment.types";
+import { NewPost, Post } from "@/entities/post/models/post.types";
+import { User, UserWithDetail } from "@/entities/user/models/user.types";
+
 import { Edit2, MessageSquare, Plus, Search, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -26,64 +30,12 @@ import {
   Textarea,
 } from "../shared/ui";
 
-type Address = {
-  address: string;
-  city: string;
-  state: string;
-};
-
-type Company = {
-  name: string;
-  title: string;
-};
-
-type User = {
-  id: number;
-  username: string;
-  image: string;
-};
-
-type UserWithDetail = User & {
-  firstName?: string;
-  lastName?: string;
-  age?: number;
-  email?: string;
-  phone?: string;
-  address?: Address;
-  company?: Company;
-};
-
-type Post = {
-  id: number;
-  title: string;
-  body: string;
-  tags: string[];
-  reactions?: {
-    likes?: number;
-    dislikes?: number;
-  };
-  views: number;
-  userId: number;
-};
-
-type NewPost = Omit<Post, "id" | "tags" | "reactions" | "views">;
-
 type PostWithAuthor = Post & { author: User };
-
+type CommentWithUser = Comment & { user: User };
 type Tag = {
   slug: string;
   url: string;
 };
-
-type Comment = {
-  id: number;
-  postId: number | null;
-  body: string;
-  likes: number;
-  user: User;
-  userId: User["id"];
-};
-type NewComment = Omit<Comment, "id" | "user" | "likes">;
 
 type PostsData = {
   posts: Post[];
@@ -119,7 +71,7 @@ const PostsManager = () => {
   const [loading, setLoading] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
-  const [comments, setComments] = useState<{ [key: Post["id"]]: Comment[] }>({});
+  const [comments, setComments] = useState<{ [key: Post["id"]]: CommentWithUser[] }>({});
   const [selectedComment, setSelectedComment] = useState<Comment | null>(null);
   const [newComment, setNewComment] = useState<NewComment>({ body: "", postId: null, userId: 1 });
   const [showAddCommentDialog, setShowAddCommentDialog] = useState(false);
