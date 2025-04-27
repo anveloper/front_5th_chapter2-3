@@ -1,3 +1,5 @@
+import { User } from "@/entities/user/models/user.types";
+
 type Reaction = {
   likes?: number;
   dislikes?: number;
@@ -15,4 +17,6 @@ type Post = {
 
 type NewPost = Omit<Post, "id" | "tags" | "reactions" | "views">;
 
-export type { NewPost, Post };
+type PostWithAuthor = Post & { author: User };
+
+export type { NewPost, Post, PostWithAuthor };
