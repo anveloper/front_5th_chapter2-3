@@ -1,3 +1,4 @@
+import { editPost } from "@/entities/post/api/post.api";
 import { PostWithAuthor } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
@@ -12,23 +13,18 @@ type EditPostDialogProps = {
 export const EditPostDialog = ({ open, onOpenChange, post, onUpdate }: EditPostDialogProps) => {
   const [editedPost, setEditedPost] = useState(post);
 
+  if (!editedPost) return null;
+
   const handleUpdatePost = async () => {
-    if (!editedPost) return;
     try {
-      const response = await fetch(`/api/posts/${editedPost.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(editedPost),
-      });
-      const updated = await response.json();
-      onUpdate(updated); // 부모에 수정된 post 전달
+      const updated = await editPost(editedPost);
+      onUpdate(updated);
       onOpenChange(false);
     } catch (error) {
       console.error("게시물 업데이트 실패:", error);
     }
   };
 
-  if (!editedPost) return null;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
