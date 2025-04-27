@@ -1,5 +1,6 @@
-import { addPost } from "@/entities/post/api/post.api";
-import { NewPost, usePostContext } from "@/entities/post/models";
+import { addPost } from "@/entities/post/api";
+import type { NewPost } from "@/entities/post/models";
+import { usePostContext } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
 

@@ -1,4 +1,4 @@
-import { editPost } from "@/entities/post/api/post.api";
+import { editPost } from "@/entities/post/api";
 import { PostWithAuthor } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
