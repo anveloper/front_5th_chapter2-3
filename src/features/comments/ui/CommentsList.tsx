@@ -1,18 +1,16 @@
 import { Comment } from "@/entities/comment/models/comment.types";
-import { Post } from "@/entities/post/models/post.types";
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
+import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Button } from "@/shared/ui";
 import { Plus } from "lucide-react";
 import { useCommentContext } from "../models/use-comment-context";
 import { CommentItem } from "./CommentItem";
 
-type CommentsListProps = {
-  postId: Post["id"];
-};
-
-export const CommentsList = ({ postId = 0 }: CommentsListProps) => {
+export const CommentsList = () => {
+  const { selectedPost } = usePostContext();
   const { comments, setComments, setNewComment } = useCommentContext();
   const { setShowAddCommentDialog } = useDialogContext();
+  const postId = selectedPost?.id || 0;
 
   // 댓글 삭제
   const deleteComment = async (id: Comment["id"]) => {
