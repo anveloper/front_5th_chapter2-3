@@ -1,24 +1,21 @@
 import { addPost } from "@/entities/post/api";
 import type { NewPost } from "@/entities/post/models";
-import { usePostContext } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
+import { useDialogContext } from "../models/use-dialog-context";
+import { usePostContext } from "../models/use-post-context";
 
-type AddPostDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-};
-
-export const AddPostDialog = ({ open, onOpenChange }: AddPostDialogProps) => {
-  const { posts, setPosts } = usePostContext();
+export const AddPostDialog = () => {
+  const { setPosts } = usePostContext();
+  const { showAddDialog, setShowAddDialog } = useDialogContext();
   const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
 
   // 게시물 추가
   const handleAddPost = async () => {
     try {
       const data = await addPost(newPost);
-      setPosts([data, ...posts]);
-      onOpenChange(false);
+      setPosts((prev) => [data, ...prev]);
+      setShowAddDialog(false);
       setNewPost({ title: "", body: "", userId: 1 });
     } catch (error) {
       console.error("게시물 추가 오류:", error);
@@ -26,7 +23,7 @@ export const AddPostDialog = ({ open, onOpenChange }: AddPostDialogProps) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showAddDialog} onOpenChange={setShowAddDialog}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>새 게시물 추가</DialogTitle>

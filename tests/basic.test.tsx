@@ -6,7 +6,7 @@ import { setupServer } from "msw/node";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
-import { PostProvider } from "../src/app/providers/PostProvider";
+import { Providers } from "../src/app/providers";
 import PostsManager from "../src/pages/PostsManagerPage";
 import { TEST_POSTS, TEST_SEARCH_POST, TEST_USERS } from "./mockData";
 // MSW 서버 설정
@@ -47,9 +47,9 @@ afterAll(() => server.close());
 const renderPostsManager = () => {
   return render(
     <MemoryRouter>
-      <PostProvider>
+      <Providers>
         <PostsManager />
-      </PostProvider>
+      </Providers>
     </MemoryRouter>,
   );
 };

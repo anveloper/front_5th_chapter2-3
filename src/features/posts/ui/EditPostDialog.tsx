@@ -1,32 +1,33 @@
 import { editPost } from "@/entities/post/api";
-import { PostWithAuthor } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDialogContext } from "../models/use-dialog-context";
+import { usePostContext } from "../models/use-post-context";
 
-type EditPostDialogProps = {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  post: PostWithAuthor | null;
-  onUpdate: (updatedPost: PostWithAuthor) => void;
-};
+export const EditPostDialog = () => {
+  const { posts, setPosts, selectedPost } = usePostContext();
+  const { showEditDialog, setShowEditDialog } = useDialogContext();
+  const [editedPost, setEditedPost] = useState(selectedPost);
 
-export const EditPostDialog = ({ open, onOpenChange, post, onUpdate }: EditPostDialogProps) => {
-  const [editedPost, setEditedPost] = useState(post);
+  useEffect(() => {
+    setEditedPost(selectedPost);
+  }, [selectedPost]);
 
   if (!editedPost) return null;
 
+  // 게시물 업데이트
   const handleUpdatePost = async () => {
     try {
       const updated = await editPost(editedPost);
-      onUpdate(updated);
-      onOpenChange(false);
+      setPosts(posts.map((post) => (updated.id === post.id ? updated : post)));
+      setShowEditDialog(false);
     } catch (error) {
       console.error("게시물 업데이트 실패:", error);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>게시물 수정</DialogTitle>

@@ -1,6 +1,6 @@
-import { NewPost, PostWithAuthor } from "../models";
+import { NewPost, Post } from "../models";
 
-export const addPost = async (newPost: NewPost): Promise<PostWithAuthor> => {
+export const addPost = async (newPost: NewPost): Promise<Post> => {
   const response = await fetch("/api/posts/add", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -11,7 +11,7 @@ export const addPost = async (newPost: NewPost): Promise<PostWithAuthor> => {
   return response.json();
 };
 
-export const editPost = async (editedPost: PostWithAuthor): Promise<PostWithAuthor> => {
+export const editPost = async (editedPost: Post): Promise<Post> => {
   const response = await fetch(`/api/posts/${editedPost.id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
