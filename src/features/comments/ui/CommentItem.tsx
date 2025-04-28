@@ -1,6 +1,6 @@
 import { Comment } from "@/entities/comment/models/comment.types";
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
-import { usePostContext } from "@/features/posts/models/use-post-context";
+import { useURLContext } from "@/features/posts/models/use-url-context";
 import { highlightText } from "@/shared/lib/highlight-test";
 import { Button } from "@/shared/ui";
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react";
@@ -13,7 +13,7 @@ type CommentItemProps = {
 };
 
 export const CommentItem = ({ comment, likeComment, deleteComment }: CommentItemProps) => {
-  const { searchQuery } = usePostContext();
+  const { searchQuery } = useURLContext();
   const { setSelectedComment } = useCommentContext();
   const { setShowEditCommentDialog } = useDialogContext();
 

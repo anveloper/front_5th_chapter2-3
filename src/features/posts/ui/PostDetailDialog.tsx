@@ -3,9 +3,11 @@ import { highlightText } from "@/shared/lib/highlight-test";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
+import { useURLContext } from "../models/use-url-context";
 
 export const PostDetailDialog = () => {
-  const { searchQuery, selectedPost } = usePostContext();
+  const { searchQuery } = useURLContext();
+  const { selectedPost } = usePostContext();
   const { showPostDetailDialog, setShowPostDetailDialog } = useDialogContext();
 
   return (
