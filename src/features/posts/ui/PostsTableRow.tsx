@@ -1,6 +1,7 @@
 import { Post } from "@/entities/post/models";
 import { User } from "@/entities/user/models/user.types";
 import { useCommentContext } from "@/features/comments/models/use-comment-context";
+import { fetchUserAPI } from "@/features/users/api/fetch-user";
 import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-test";
 import { Button, TableCell, TableRow } from "@/shared/ui";
@@ -32,8 +33,7 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
   const openUserModal = async (user?: User) => {
     if (!user) return;
     try {
-      const response = await fetch(`/api/users/${user.id}`);
-      const userData = await response.json();
+      const userData = await fetchUserAPI(user.id);
       setSelectedUser(userData);
       setShowUserModal(true);
     } catch (error) {

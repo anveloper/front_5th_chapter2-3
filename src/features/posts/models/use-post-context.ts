@@ -13,7 +13,7 @@ type PostContextType = {
   tags: Tag[];
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
   fetchSetPosts: () => void;
-  fetchPostsByTag: (tag: Post["tags"][number]) => Promise<void>;
+  fetchSetPostsByTag: (tag: Post["tags"][number]) => Promise<void>;
 };
 
 export const PostContext = createContext<PostContextType | null>(null);

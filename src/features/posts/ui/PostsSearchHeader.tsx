@@ -18,12 +18,12 @@ export const PostsSearchHeader = () => {
   } = useURLContext();
 
   // 상태 관리
-  const { setPosts, setTotal, tags, fetchSetPosts: fetchPosts, setLoading, fetchPostsByTag } = usePostContext();
+  const { setPosts, setTotal, tags, fetchSetPosts, setLoading, fetchSetPostsByTag } = usePostContext();
 
   // 게시물 검색
   const searchPosts = async () => {
     if (!searchQuery) {
-      fetchPosts();
+      fetchSetPosts();
       return;
     }
     setLoading(true);
@@ -55,7 +55,7 @@ export const PostsSearchHeader = () => {
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value);
-          fetchPostsByTag(value);
+          fetchSetPostsByTag(value);
           updateURL();
         }}
       >

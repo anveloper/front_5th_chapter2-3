@@ -1,6 +1,7 @@
 import { fetchPostsAPI } from "@/entities/post/api/fetch-posts";
+import { fetchPostsByTagAPI } from "@/entities/post/api/fetch-posts-by-tag";
+import { fetchTagsAPI } from "@/entities/post/api/fetch-tags";
 import { Post, Tag } from "@/entities/post/models/post.types";
-import { User } from "@/entities/user/models/user.types";
 import { PostContext } from "@/features/posts/models/use-post-context";
 import { useURLContext } from "@/features/posts/models/use-url-context";
 import { ReactNode, useEffect, useState } from "react";
@@ -30,32 +31,21 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // 태그별 게시물 가져오기
-  const fetchPostsByTag = async (tag: Post["tags"][number]) => {
+  const fetchSetPostsByTag = async (tag: Post["tags"][number]) => {
     if (!tag || tag === "all") {
       fetchSetPosts();
       return;
     }
     setLoading(true);
     try {
-      const [postsResponse, usersResponse] = await Promise.all([
-        fetch(`/api/posts/tag/${tag}`),
-        fetch("/api/users?limit=0&select=username,image"),
-      ]);
-      const postsData = (await postsResponse.json()) as { posts: Post[]; total: number };
-      const usersData = (await usersResponse.json()) as { users: User[] };
-
-      const postsWithUsers: Post[] = postsData.posts.map((post) => {
-        const author = usersData.users.find((user) => user.id === post.userId);
-        if (!author) throw new Error("wrong author");
-        return { ...post, author };
-      });
-
-      setPosts(postsWithUsers);
-      setTotal(postsData.total);
+      const { posts, total } = await fetchPostsByTagAPI(tag);
+      setPosts(posts);
+      setTotal(total);
     } catch (error) {
       console.error("태그별 게시물 가져오기 오류:", error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // tag
@@ -64,8 +54,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
   // 태그 가져오기
   const fetchTags = async () => {
     try {
-      const response = await fetch("/api/posts/tags");
-      const data = await response.json();
+      const data = await fetchTagsAPI();
       setTags(data);
     } catch (error) {
       console.error("태그 가져오기 오류:", error);
@@ -78,7 +67,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if (selectedTag) {
-      fetchPostsByTag(selectedTag);
+      fetchSetPostsByTag(selectedTag);
     } else {
       fetchSetPosts();
     }
@@ -98,7 +87,7 @@ export const PostProvider = ({ children }: { children: ReactNode }) => {
     loading,
     setLoading,
     fetchSetPosts,
-    fetchPostsByTag,
+    fetchSetPostsByTag,
   };
 
   return <PostContext.Provider value={value}>{children}</PostContext.Provider>;
