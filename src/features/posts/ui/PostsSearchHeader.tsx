@@ -1,26 +1,24 @@
 import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui";
 import { Search } from "lucide-react";
+import { searchPostsAPI } from "../api/search-posts";
+import { useURLContext } from "../models/use-url-context";
 
 export const PostsSearchHeader = () => {
-  // 상태 관리
   const {
-    setPosts,
-    setTotal,
     searchQuery,
     setSearchQuery,
     sortBy,
     setSortBy,
     sortOrder,
     setSortOrder,
-    tags,
     selectedTag,
     setSelectedTag,
-    fetchPosts,
-    setLoading,
     updateURL,
-    fetchPostsByTag,
-  } = usePostContext();
+  } = useURLContext();
+
+  // 상태 관리
+  const { setPosts, setTotal, tags, fetchSetPosts: fetchPosts, setLoading, fetchPostsByTag } = usePostContext();
 
   // 게시물 검색
   const searchPosts = async () => {
@@ -30,8 +28,7 @@ export const PostsSearchHeader = () => {
     }
     setLoading(true);
     try {
-      const response = await fetch(`/api/posts/search?q=${searchQuery}`);
-      const data = await response.json();
+      const data = await searchPostsAPI(searchQuery);
       setPosts(data.posts);
       setTotal(data.total);
     } catch (error) {

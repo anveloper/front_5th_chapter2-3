@@ -5,15 +5,18 @@ import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-test";
 import { Button, TableCell, TableRow } from "@/shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
+import { deletePostAPI } from "../api/delete-post";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
+import { useURLContext } from "../models/use-url-context";
 
 type PostsTableRowProps = {
   post: Post;
 };
 
 export const PostsTableRow = ({ post }: PostsTableRowProps) => {
-  const { setSelectedPost, searchQuery, selectedTag, setSelectedTag, updateURL, deletePost } = usePostContext();
+  const { searchQuery, selectedTag, setSelectedTag, updateURL } = useURLContext();
+  const { setSelectedPost, setPosts } = usePostContext();
   const { setShowEditDialog, setShowPostDetailDialog, setShowUserModal } = useDialogContext();
   const { fetchComments } = useCommentContext();
   const { setSelectedUser } = useUserContext();
@@ -35,6 +38,16 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
       setShowUserModal(true);
     } catch (error) {
       console.error("사용자 정보 가져오기 오류:", error);
+    }
+  };
+
+  // 게시물 삭제
+  const deletePost = async (id: Post["id"]) => {
+    try {
+      await deletePostAPI(id);
+      setPosts((prev) => prev.filter((post) => post.id !== id));
+    } catch (error) {
+      console.error("게시물 삭제 오류:", error);
     }
   };
 
