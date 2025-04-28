@@ -1,7 +1,8 @@
+import { API_URL } from "@/shared/lib/api-path";
 import { Post, PostsData, UsersData } from "../models";
 
 export const fetchPostsByTagAPI = async (tag: Post["tags"][number]) => {
-  const response = await fetch(`/api/posts/tag/${tag}`);
+  const response = await fetch(API_URL.POSTS_TAG(tag));
   const postsData = (await response.json()) as PostsData;
 
   const response2 = await fetch("/api/users?limit=0&select=username,image");
