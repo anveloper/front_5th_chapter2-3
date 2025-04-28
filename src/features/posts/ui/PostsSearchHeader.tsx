@@ -64,9 +64,9 @@ export const PostsSearchHeader = () => {
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">모든 태그</SelectItem>
-          {tags.map((tag) => {
+          {tags.map((tag, idx) => {
             return (
-              <SelectItem key={tag.url} value={tag.slug}>
+              <SelectItem key={idx} value={tag.slug}>
                 {tag.slug}
               </SelectItem>
             );
