@@ -1,6 +1,6 @@
-import { editPost } from "@/entities/post/api";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useEffect, useState } from "react";
+import { editPostAPI } from "../api/edit-post";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
 
@@ -18,7 +18,7 @@ export const EditPostDialog = () => {
   // 게시물 업데이트
   const handleUpdatePost = async () => {
     try {
-      const updated = await editPost(editedPost);
+      const updated = await editPostAPI(editedPost);
       setPosts(posts.map((post) => (updated.id === post.id ? updated : post)));
       setShowEditDialog(false);
     } catch (error) {

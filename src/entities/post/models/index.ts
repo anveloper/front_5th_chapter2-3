@@ -1,1 +1,1 @@
-export type { NewPost, Post, Tag } from "./post.types";
+export type { NewPost, Post, PostsData, Tag, UsersData } from "./post.types";

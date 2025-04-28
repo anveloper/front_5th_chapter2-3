@@ -1,7 +1,7 @@
-import { addPost } from "@/entities/post/api";
 import type { NewPost } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
+import { addPostAPI } from "../api/add-post";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
 
@@ -13,7 +13,7 @@ export const AddPostDialog = () => {
   // 게시물 추가
   const handleAddPost = async () => {
     try {
-      const data = await addPost(newPost);
+      const data = await addPostAPI(newPost);
       setPosts((prev) => [data, ...prev]);
       setShowAddDialog(false);
       setNewPost({ title: "", body: "", userId: 1 });

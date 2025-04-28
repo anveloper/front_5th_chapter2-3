@@ -23,4 +23,18 @@ type Tag = {
   url: string;
 };
 
-export type { NewPost, Post, Tag };
+type PostsData = {
+  posts: Post[];
+  total: number;
+  skip: number;
+  limit: number;
+};
+
+type UsersData = {
+  users: User[];
+  total: number;
+  skip: number;
+  limit: number;
+};
+
+export type { NewPost, Post, PostsData, Tag, UsersData };
