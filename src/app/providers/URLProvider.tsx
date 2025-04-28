@@ -1,5 +1,5 @@
 import { URLContext } from "@/features/posts/models/use-url-context";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const URLProvider = ({ children }: { children: ReactNode }) => {
@@ -18,7 +18,7 @@ export const URLProvider = ({ children }: { children: ReactNode }) => {
   // tag
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
 
-  const updateURL = () => {
+  const updateURL = useCallback(() => {
     const params = new URLSearchParams();
     if (skip) params.set("skip", skip.toString());
     if (limit) params.set("limit", limit.toString());
@@ -27,7 +27,7 @@ export const URLProvider = ({ children }: { children: ReactNode }) => {
     if (sortOrder) params.set("sortOrder", sortOrder);
     if (selectedTag) params.set("tag", selectedTag);
     navigate(`?${params.toString()}`);
-  };
+  }, [limit, navigate, searchQuery, selectedTag, skip, sortBy, sortOrder]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -39,20 +39,37 @@ export const URLProvider = ({ children }: { children: ReactNode }) => {
     setSelectedTag(params.get("tag") || "");
   }, [location.search]);
 
-  const value = {
-    updateURL,
-    skip,
-    setSkip,
-    limit,
-    setLimit,
-    searchQuery,
-    setSearchQuery,
-    sortBy,
-    setSortBy,
-    sortOrder,
-    setSortOrder,
-    selectedTag,
-    setSelectedTag,
-  };
+  const value = useMemo(
+    () => ({
+      updateURL,
+      skip,
+      setSkip,
+      limit,
+      setLimit,
+      searchQuery,
+      setSearchQuery,
+      sortBy,
+      setSortBy,
+      sortOrder,
+      setSortOrder,
+      selectedTag,
+      setSelectedTag,
+    }),
+    [
+      updateURL,
+      skip,
+      setSkip,
+      limit,
+      setLimit,
+      searchQuery,
+      setSearchQuery,
+      sortBy,
+      setSortBy,
+      sortOrder,
+      setSortOrder,
+      selectedTag,
+      setSelectedTag,
+    ],
+  );
   return <URLContext.Provider value={value}>{children}</URLContext.Provider>;
 };
