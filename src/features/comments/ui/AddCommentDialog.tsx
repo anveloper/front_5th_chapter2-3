@@ -1,6 +1,7 @@
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui";
 import { useState } from "react";
+import { addCommentAPI } from "../api/add-comment";
 import { useCommentContext } from "../models/use-comment-context";
 
 export const AddCommentDialog = () => {
@@ -11,12 +12,7 @@ export const AddCommentDialog = () => {
   // 댓글 추가
   const addComment = async () => {
     try {
-      const response = await fetch("/api/comments/add", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newComment),
-      });
-      const data = await response.json();
+      const data = await addCommentAPI(newComment);
       setComments((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],

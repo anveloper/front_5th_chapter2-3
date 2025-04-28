@@ -1,5 +1,6 @@
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui";
+import { editCommentAPI } from "../api/edit-comment";
 import { useCommentContext } from "../models/use-comment-context";
 
 export const EditCommentDialog = () => {
@@ -10,12 +11,7 @@ export const EditCommentDialog = () => {
   const updateComment = async () => {
     try {
       if (!selectedComment) return;
-      const response = await fetch(`/api/comments/${selectedComment.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: selectedComment.body }),
-      });
-      const data = await response.json();
+      const data = await editCommentAPI(selectedComment.id, selectedComment.body);
       setComments((prev) => ({
         ...prev,
         [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),

@@ -3,6 +3,8 @@ import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Button } from "@/shared/ui";
 import { Plus } from "lucide-react";
+import { deleteCommentAPI } from "../api/delete-comment";
+import { likeCommentAPI } from "../api/like-comment";
 import { useCommentContext } from "../models/use-comment-context";
 import { CommentItem } from "./CommentItem";
 
@@ -15,7 +17,7 @@ export const CommentsList = () => {
   // 댓글 삭제
   const deleteComment = async (id: Comment["id"]) => {
     try {
-      await fetch(`/api/comments/${id}`, { method: "DELETE" });
+      await deleteCommentAPI(id);
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].filter((comment) => comment.id !== id),
@@ -31,12 +33,7 @@ export const CommentsList = () => {
       const targetComment = comments[postId].find((c) => c.id === id);
       if (!targetComment) return;
 
-      const response = await fetch(`/api/comments/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ likes: targetComment.likes + 1 }),
-      });
-      const data = await response.json();
+      const data = await likeCommentAPI(id, targetComment.likes + 1);
       setComments((prev) => ({
         ...prev,
         [postId]: prev[postId].map((comment) =>
