@@ -1,10 +1,12 @@
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
+import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui";
 import { useState } from "react";
 import { addCommentAPI } from "../api/add-comment";
 import { useCommentContext } from "../models/use-comment-context";
 
 export const AddCommentDialog = () => {
+  const { selectedPost } = usePostContext();
   const { setComments } = useCommentContext();
   const { showAddCommentDialog, setShowAddCommentDialog } = useDialogContext();
   const [newComment, setNewComment] = useState({ body: "", postId: null, userId: 1 });
@@ -12,7 +14,8 @@ export const AddCommentDialog = () => {
   // 댓글 추가
   const addComment = async () => {
     try {
-      const data = await addCommentAPI(newComment);
+      if (!selectedPost) return;
+      const data = await addCommentAPI({ ...newComment, postId: selectedPost.id });
       setComments((prev) => ({
         ...prev,
         [data.postId]: [...(prev[data.postId] || []), data],

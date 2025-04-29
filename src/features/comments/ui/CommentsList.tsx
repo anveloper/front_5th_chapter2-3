@@ -61,8 +61,8 @@ export const CommentsList = () => {
         </Button>
       </div>
       <div className="space-y-1">
-        {comments[postId]?.map((comment) => (
-          <CommentItem comment={comment} deleteComment={deleteComment} likeComment={likeComment} />
+        {comments[postId]?.map((comment, key) => (
+          <CommentItem key={key} comment={comment} deleteComment={deleteComment} likeComment={likeComment} />
         ))}
       </div>
     </div>

@@ -18,8 +18,8 @@ export const PostsTable = () => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {posts.map((post) => (
-          <PostsTableRow key={post.id} post={post} />
+        {posts.map((post, key) => (
+          <PostsTableRow key={key} post={post} />
         ))}
       </TableBody>
     </Table>
