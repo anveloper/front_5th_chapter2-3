@@ -1,7 +1,7 @@
+import PostsManagerPage from "@/pages/PostsManager.tsx";
+import Footer from "@/widgets/common/ui/Footer.tsx";
+import Header from "@/widgets/common/ui/Header.tsx";
 import { BrowserRouter as Router } from "react-router-dom";
-import PostsManagerPage from "../pages/PostsManagerPage.tsx";
-import Footer from "../widgets/common/ui/Footer.tsx";
-import Header from "../widgets/common/ui/Header.tsx";
 import { Providers } from "./providers";
 import "./styles/global.css";
 
