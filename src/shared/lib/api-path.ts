@@ -8,6 +8,7 @@ const _POSTS = "posts";
 const _COMMENTS = "comments";
 const _USERS = "users";
 const _TAG = "tag";
+const _TAGS = "tags";
 const _SEARCH = "search";
 const _POST = "post";
 
@@ -17,6 +18,7 @@ export const API_URL = {
   POSTS: (limit: number, skip: number) => `/${_API}/${_POSTS}?limit=${limit}&skip=${skip}` as const,
   POSTS_ID: (id: Post["id"]) => `/${_API}/${_POSTS}/${id}` as const,
   POSTS_TAG: (tag: Post["tags"][number]) => `/${_API}/${_POSTS}/${_TAG}/${tag}` as const,
+  POSTS_TAGS: `/${_API}/${_POSTS}/${_TAGS}`,
   POSTS_SEARCH: (query: string) => `/${_API}/${_POSTS}/${_SEARCH}?q=${query}` as const,
 
   // comments

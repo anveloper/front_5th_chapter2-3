@@ -5,7 +5,7 @@ export const fetchPostsByTagAPI = async (tag: Post["tags"][number]) => {
   const response = await fetch(API_URL.POSTS_TAG(tag));
   const postsData = (await response.json()) as PostsData;
 
-  const response2 = await fetch("/api/users?limit=0&select=username,image");
+  const response2 = await fetch(API_URL.USERS);
   const usersData = (await response2.json()) as UsersData;
 
   const posts: Post[] = postsData.posts.map((post) => {
