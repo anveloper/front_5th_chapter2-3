@@ -1,7 +1,7 @@
 import { Post } from "@/entities/post/models";
+import { fetchUserAPI } from "@/entities/user/api/fetch-user";
 import { User } from "@/entities/user/models/user.types";
 import { useCommentContext } from "@/features/comments/models/use-comment-context";
-import { fetchUserAPI } from "@/features/users/api/fetch-user";
 import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Button, TableCell, TableRow } from "@/shared/ui";
