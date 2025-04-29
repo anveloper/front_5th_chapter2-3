@@ -1,5 +1,5 @@
 import { CommentsList } from "@/features/comments/ui/CommentsList";
-import { highlightText } from "@/shared/lib/highlight-test";
+import { highlightText } from "@/shared/lib/highlight-text";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";

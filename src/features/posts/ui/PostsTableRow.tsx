@@ -3,7 +3,7 @@ import { User } from "@/entities/user/models/user.types";
 import { useCommentContext } from "@/features/comments/models/use-comment-context";
 import { fetchUserAPI } from "@/features/users/api/fetch-user";
 import { useUserContext } from "@/features/users/models/use-user-context";
-import { highlightText } from "@/shared/lib/highlight-test";
+import { highlightText } from "@/shared/lib/highlight-text";
 import { Button, TableCell, TableRow } from "@/shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
 import { deletePostAPI } from "../api/delete-post";
