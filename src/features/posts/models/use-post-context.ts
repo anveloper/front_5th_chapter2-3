@@ -12,8 +12,6 @@ type PostContextType = {
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   tags: Tag[];
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
-  fetchSetPosts: () => void;
-  fetchSetPostsByTag: (tag: Post["tags"][number]) => Promise<void>;
 };
 
 export const PostContext = createContext<PostContextType | null>(null);

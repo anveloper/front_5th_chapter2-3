@@ -1,11 +1,22 @@
 import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui";
 import { Search } from "lucide-react";
-import { searchPostsAPI } from "../api/search-posts";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { useFetchPosts } from "../models/use-fetch-posts";
+import { useFetchPostsByTag } from "../models/use-fetch-posts-by-tag";
+import { useFetchTags } from "../models/use-fetch-tags";
+import { useSearchPosts } from "../models/use-search-posts";
+import { useUpdateURL } from "../models/use-update-url";
 import { useURLContext } from "../models/use-url-context";
 
 export const PostsSearchHeader = () => {
+  const location = useLocation();
   const {
+    skip,
+    setSkip,
+    limit,
+    setLimit,
     searchQuery,
     setSearchQuery,
     sortBy,
@@ -14,28 +25,35 @@ export const PostsSearchHeader = () => {
     setSortOrder,
     selectedTag,
     setSelectedTag,
-    updateURL,
   } = useURLContext();
+  const { tags } = usePostContext();
 
-  // 상태 관리
-  const { setPosts, setTotal, tags, fetchSetPosts, setLoading, fetchSetPostsByTag } = usePostContext();
+  const { fetchPosts } = useFetchPosts();
+  const { fetchPostsByTag } = useFetchPostsByTag();
+  const { fetchTags } = useFetchTags();
+  const { searchPosts } = useSearchPosts();
+  const { updateURL } = useUpdateURL();
 
-  // 게시물 검색
-  const searchPosts = async () => {
-    if (!searchQuery) {
-      fetchSetPosts();
-      return;
-    }
-    setLoading(true);
-    try {
-      const data = await searchPostsAPI(searchQuery);
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error("게시물 검색 오류:", error);
-    }
-    setLoading(false);
-  };
+  useEffect(() => {
+    if (selectedTag) fetchPostsByTag(selectedTag);
+    else fetchPosts();
+
+    updateURL();
+  }, [skip, limit, sortBy, sortOrder, selectedTag, updateURL, fetchPostsByTag, fetchPosts]);
+
+  useEffect(() => {
+    fetchTags();
+  }, [fetchTags]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSkip(parseInt(params.get("skip") || "0"));
+    setLimit(parseInt(params.get("limit") || "10"));
+    setSearchQuery(params.get("search") || "");
+    setSortBy(params.get("sortBy") || "");
+    setSortOrder(params.get("sortOrder") || "asc");
+    setSelectedTag(params.get("tag") || "");
+  }, [location.search, setLimit, setSearchQuery, setSelectedTag, setSkip, setSortBy, setSortOrder]);
 
   return (
     <div className="flex gap-4">
@@ -55,7 +73,7 @@ export const PostsSearchHeader = () => {
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value);
-          fetchSetPostsByTag(value);
+          fetchPostsByTag(value);
           updateURL();
         }}
       >

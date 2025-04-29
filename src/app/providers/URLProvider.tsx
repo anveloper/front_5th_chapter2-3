@@ -1,9 +1,8 @@
 import { URLContext } from "@/features/posts/models/use-url-context";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { ReactNode, useMemo, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export const URLProvider = ({ children }: { children: ReactNode }) => {
-  const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   // search
@@ -18,30 +17,8 @@ export const URLProvider = ({ children }: { children: ReactNode }) => {
   // tag
   const [selectedTag, setSelectedTag] = useState(queryParams.get("tag") || "");
 
-  const updateURL = useCallback(() => {
-    const params = new URLSearchParams();
-    if (skip) params.set("skip", skip.toString());
-    if (limit) params.set("limit", limit.toString());
-    if (searchQuery) params.set("search", searchQuery);
-    if (sortBy) params.set("sortBy", sortBy);
-    if (sortOrder) params.set("sortOrder", sortOrder);
-    if (selectedTag) params.set("tag", selectedTag);
-    navigate(`?${params.toString()}`);
-  }, [limit, navigate, searchQuery, selectedTag, skip, sortBy, sortOrder]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    setSkip(parseInt(params.get("skip") || "0"));
-    setLimit(parseInt(params.get("limit") || "10"));
-    setSearchQuery(params.get("search") || "");
-    setSortBy(params.get("sortBy") || "");
-    setSortOrder(params.get("sortOrder") || "asc");
-    setSelectedTag(params.get("tag") || "");
-  }, [location.search]);
-
   const value = useMemo(
     () => ({
-      updateURL,
       skip,
       setSkip,
       limit,
@@ -56,7 +33,6 @@ export const URLProvider = ({ children }: { children: ReactNode }) => {
       setSelectedTag,
     }),
     [
-      updateURL,
       skip,
       setSkip,
       limit,

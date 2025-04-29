@@ -1,7 +1,7 @@
 import { Post } from "@/entities/post/models";
 import { fetchUserAPI } from "@/entities/user/api/fetch-user";
 import { User } from "@/entities/user/models/user.types";
-import { useCommentContext } from "@/features/comments/models/use-comment-context";
+import { useFetchComments } from "@/features/comments/models/use-fetch-comments";
 import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Button, TableCell, TableRow } from "@/shared/ui";
@@ -9,6 +9,7 @@ import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react
 import { deletePostAPI } from "../api/delete-post";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
+import { useUpdateURL } from "../models/use-update-url";
 import { useURLContext } from "../models/use-url-context";
 
 type PostsTableRowProps = {
@@ -16,11 +17,13 @@ type PostsTableRowProps = {
 };
 
 export const PostsTableRow = ({ post }: PostsTableRowProps) => {
-  const { searchQuery, selectedTag, setSelectedTag, updateURL } = useURLContext();
+  const { searchQuery, selectedTag, setSelectedTag } = useURLContext();
   const { setSelectedPost, setPosts } = usePostContext();
   const { setShowEditDialog, setShowPostDetailDialog, setShowUserModal } = useDialogContext();
-  const { fetchComments } = useCommentContext();
   const { setSelectedUser } = useUserContext();
+
+  const { fetchComments } = useFetchComments();
+  const { updateURL } = useUpdateURL();
 
   // 게시물 상세 보기
   const openPostDetail = (post: Post) => {

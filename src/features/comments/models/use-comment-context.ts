@@ -1,5 +1,4 @@
 import { Comment, CommentsMap, NewComment } from "@/entities/comment/models/comment.types";
-import { Post } from "@/entities/post/models/post.types";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 type CommentContextType = {
@@ -9,7 +8,6 @@ type CommentContextType = {
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>;
   newComment: NewComment;
   setNewComment: Dispatch<SetStateAction<NewComment>>;
-  fetchComments: (postId: Post["id"]) => Promise<void>;
 };
 
 export const CommentContext = createContext<CommentContextType | null>(null);

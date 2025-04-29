@@ -13,7 +13,6 @@ type URLContextType = {
   setSortOrder: React.Dispatch<React.SetStateAction<string>>;
   selectedTag: string;
   setSelectedTag: React.Dispatch<React.SetStateAction<string>>;
-  updateURL: () => void;
 };
 export const URLContext = createContext<URLContextType | null>(null);
 
