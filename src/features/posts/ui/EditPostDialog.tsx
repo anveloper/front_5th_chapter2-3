@@ -1,13 +1,14 @@
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useEffect, useState } from "react";
-import { editPostAPI } from "../api/edit-post";
 import { useDialogContext } from "../models/use-dialog-context";
+import { useEditPost } from "../models/use-edit-post";
 import { usePostContext } from "../models/use-post-context";
 
 export const EditPostDialog = () => {
-  const { posts, setPosts, selectedPost } = usePostContext();
+  const { selectedPost } = usePostContext();
   const { showEditDialog, setShowEditDialog } = useDialogContext();
   const [editedPost, setEditedPost] = useState(selectedPost);
+  const { mutate: editPost } = useEditPost();
 
   useEffect(() => {
     setEditedPost(selectedPost);
@@ -16,14 +17,12 @@ export const EditPostDialog = () => {
   if (!editedPost) return null;
 
   // 게시물 업데이트
-  const handleUpdatePost = async () => {
-    try {
-      const updated = await editPostAPI(editedPost);
-      setPosts(posts.map((post) => (updated.id === post.id ? updated : post)));
-      setShowEditDialog(false);
-    } catch (error) {
-      console.error("게시물 업데이트 실패:", error);
-    }
+  const handleUpdatePost = () => {
+    editPost(editedPost, {
+      onSuccess: () => {
+        setShowEditDialog(false);
+      },
+    });
   };
 
   return (

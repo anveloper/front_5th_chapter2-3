@@ -1,25 +1,25 @@
 import type { NewPost } from "@/entities/post/models";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Textarea } from "@/shared/ui";
 import { useState } from "react";
-import { addPostAPI } from "../api/add-post";
+import { useAddPost } from "../models/use-add-post";
 import { useDialogContext } from "../models/use-dialog-context";
-import { usePostContext } from "../models/use-post-context";
 
 export const AddPostDialog = () => {
-  const { setPosts } = usePostContext();
   const { showAddDialog, setShowAddDialog } = useDialogContext();
   const [newPost, setNewPost] = useState<NewPost>({ title: "", body: "", userId: 1 });
+  const { mutate: addPost } = useAddPost();
 
   // 게시물 추가
-  const handleAddPost = async () => {
-    try {
-      const data = await addPostAPI(newPost);
-      setPosts((prev) => [data, ...prev]);
-      setShowAddDialog(false);
-      setNewPost({ title: "", body: "", userId: 1 });
-    } catch (error) {
-      console.error("게시물 추가 오류:", error);
-    }
+  const handleAddPost = () => {
+    addPost(newPost, {
+      onSuccess: () => {
+        setShowAddDialog(false);
+        setNewPost({ title: "", body: "", userId: 1 });
+      },
+      onError: (error) => {
+        console.error("게시물 추가 오류:", error);
+      },
+    });
   };
 
   return (

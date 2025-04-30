@@ -1,5 +1,6 @@
+import { searchPostsAPI } from "@/entities/post/api/search-posts";
+import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
-import { searchPostsAPI } from "../api/search-posts";
 import { useFetchPosts } from "./use-fetch-posts";
 import { usePostContext } from "./use-post-context";
 import { useURLContext } from "./use-url-context";
@@ -9,6 +10,12 @@ export const useSearchPosts = () => {
   const { setPosts, setTotal, setLoading } = usePostContext();
   const { fetchPosts } = useFetchPosts();
 
+  const { refetch } = useQuery({
+    queryKey: ["posts", "search", searchQuery],
+    queryFn: () => searchPostsAPI(searchQuery),
+    enabled: false,
+  });
+
   // 게시물 검색
   const searchPosts = useCallback(async () => {
     if (!searchQuery) {
@@ -17,14 +24,14 @@ export const useSearchPosts = () => {
     }
     setLoading(true);
     try {
-      const data = await searchPostsAPI(searchQuery);
+      const data = await refetch().then((res) => res.data);
       setPosts(data.posts);
       setTotal(data.total);
     } catch (error) {
       console.error("게시물 검색 오류:", error);
     }
     setLoading(false);
-  }, [fetchPosts, searchQuery, setLoading, setPosts, setTotal]);
+  }, [fetchPosts, refetch, searchQuery, setLoading, setPosts, setTotal]);
 
   return { searchPosts };
 };

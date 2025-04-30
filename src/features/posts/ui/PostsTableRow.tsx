@@ -6,7 +6,7 @@ import { useUserContext } from "@/features/users/models/use-user-context";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Button, TableCell, TableRow } from "@/shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
-import { deletePostAPI } from "../api/delete-post";
+import { useDeletePost } from "../models/use-delete-post";
 import { useDialogContext } from "../models/use-dialog-context";
 import { usePostContext } from "../models/use-post-context";
 import { useUpdateURL } from "../models/use-update-url";
@@ -18,9 +18,11 @@ type PostsTableRowProps = {
 
 export const PostsTableRow = ({ post }: PostsTableRowProps) => {
   const { searchQuery, selectedTag, setSelectedTag } = useURLContext();
-  const { setSelectedPost, setPosts } = usePostContext();
+  const { setSelectedPost } = usePostContext();
   const { setShowEditDialog, setShowPostDetailDialog, setShowUserModal } = useDialogContext();
   const { setSelectedUser } = useUserContext();
+
+  const { mutate: deletePost } = useDeletePost();
 
   const { fetchComments } = useFetchComments();
   const { updateURL } = useUpdateURL();
@@ -45,13 +47,8 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
   };
 
   // 게시물 삭제
-  const deletePost = async (id: Post["id"]) => {
-    try {
-      await deletePostAPI(id);
-      setPosts((prev) => prev.filter((post) => post.id !== id));
-    } catch (error) {
-      console.error("게시물 삭제 오류:", error);
-    }
+  const handleDeletePost = (id: Post["id"]) => {
+    deletePost(id);
   };
 
   return (
@@ -110,7 +107,7 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
           >
             <Edit2 className="w-4 h-4" />
           </Button>
-          <Button variant="ghost" size="sm" onClick={() => deletePost(post.id)}>
+          <Button variant="ghost" size="sm" onClick={() => handleDeletePost(post.id)}>
             <Trash2 className="w-4 h-4" />
           </Button>
         </div>
