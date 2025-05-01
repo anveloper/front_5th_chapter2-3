@@ -1,6 +1,6 @@
 import { Comment } from "@/entities/comment/models/comment.types";
+import { useURLContext } from "@/features/posts/lib/use-url-context";
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
-import { useURLContext } from "@/features/posts/models/use-url-context";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Button } from "@/shared/ui";
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react";

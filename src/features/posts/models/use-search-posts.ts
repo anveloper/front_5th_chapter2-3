@@ -1,9 +1,9 @@
 import { searchPostsAPI } from "@/entities/post/api/search-posts";
 import { useQuery } from "@tanstack/react-query";
 import { useCallback } from "react";
+import { useURLContext } from "../lib/use-url-context";
 import { useFetchPosts } from "./use-fetch-posts";
 import { usePostContext } from "./use-post-context";
-import { useURLContext } from "./use-url-context";
 
 export const useSearchPosts = () => {
   const { searchQuery } = useURLContext();

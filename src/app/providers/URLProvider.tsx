@@ -1,4 +1,4 @@
-import { URLContext } from "@/features/posts/models/use-url-context";
+import { URLContext } from "@/features/posts/lib/use-url-context";
 import { ReactNode, useMemo, useState } from "react";
 import { useLocation } from "react-router-dom";
 

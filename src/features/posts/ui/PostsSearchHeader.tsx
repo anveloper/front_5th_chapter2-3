@@ -3,12 +3,12 @@ import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } 
 import { Search } from "lucide-react";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { useUpdateURL } from "../lib/use-update-url";
+import { useURLContext } from "../lib/use-url-context";
 import { useFetchPosts } from "../models/use-fetch-posts";
 import { useFetchPostsByTag } from "../models/use-fetch-posts-by-tag";
 import { useFetchTags } from "../models/use-fetch-tags";
 import { useSearchPosts } from "../models/use-search-posts";
-import { useUpdateURL } from "../models/use-update-url";
-import { useURLContext } from "../models/use-url-context";
 
 export const PostsSearchHeader = () => {
   const location = useLocation();
@@ -35,7 +35,7 @@ export const PostsSearchHeader = () => {
   const { updateURL } = useUpdateURL();
 
   useEffect(() => {
-    if (selectedTag) fetchPostsByTag(selectedTag);
+    if (selectedTag) fetchPostsByTag();
     else fetchPosts();
 
     updateURL();
@@ -73,7 +73,7 @@ export const PostsSearchHeader = () => {
         value={selectedTag}
         onValueChange={(value) => {
           setSelectedTag(value);
-          fetchPostsByTag(value);
+          fetchPostsByTag();
           updateURL();
         }}
       >
