@@ -7,6 +7,6 @@ export const editPostAPI = async (editedPost: Post): Promise<Post> => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(editedPost),
   });
-  if (!response.ok) throw new Error("fail edit post");
-  return response.json();
+  const data = await response.json();
+  return data;
 };

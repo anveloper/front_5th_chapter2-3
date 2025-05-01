@@ -7,7 +7,6 @@ export const addPostAPI = async (newPost: NewPost): Promise<Post> => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(newPost),
   });
-
-  if (!response.ok) throw new Error("fail add post");
-  return response.json();
+  const data = await response.json();
+  return data;
 };
