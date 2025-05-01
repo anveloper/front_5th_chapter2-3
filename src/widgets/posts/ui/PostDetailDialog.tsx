@@ -1,9 +1,9 @@
-import { CommentsList } from "@/features/comments/ui/CommentsList";
+import { useURLContext } from "@/features/posts/lib/use-url-context";
+import { useDialogContext } from "@/features/posts/models/use-dialog-context";
+import { usePostContext } from "@/features/posts/models/use-post-context";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/ui";
-import { useURLContext } from "../lib/use-url-context";
-import { useDialogContext } from "../models/use-dialog-context";
-import { usePostContext } from "../models/use-post-context";
+import { CommentsList } from "@/widgets/comment/ui/CommentsList";
 
 export const PostDetailDialog = () => {
   const { searchQuery } = useURLContext();

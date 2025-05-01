@@ -13,5 +13,8 @@ export const useAddPost = () => {
       setTotal((prev) => prev + 1);
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
+    onError: (error) => {
+      console.error("게시물 추가 오류:", error);
+    },
   });
 };

@@ -1,6 +1,6 @@
+import { useURLContext } from "@/features/posts/lib/use-url-context";
+import { usePostContext } from "@/features/posts/models/use-post-context";
 import { Button, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/ui";
-import { useURLContext } from "../lib/use-url-context";
-import { usePostContext } from "../models/use-post-context";
 
 export const PostsPagination = () => {
   const { skip, setSkip, limit, setLimit } = useURLContext();

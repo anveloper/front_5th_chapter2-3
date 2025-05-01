@@ -1,6 +1,6 @@
+import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { Button, CardTitle } from "@/shared/ui";
 import { Plus } from "lucide-react";
-import { useDialogContext } from "../models/use-dialog-context";
 
 export const PostsHeader = () => {
   const { setShowAddDialog } = useDialogContext();

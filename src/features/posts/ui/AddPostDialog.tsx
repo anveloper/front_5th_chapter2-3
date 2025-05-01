@@ -16,9 +16,6 @@ export const AddPostDialog = () => {
         setShowAddDialog(false);
         setNewPost({ title: "", body: "", userId: 1 });
       },
-      onError: (error) => {
-        console.error("게시물 추가 오류:", error);
-      },
     });
   };
 

@@ -1,25 +1,17 @@
 import { useDialogContext } from "@/features/posts/models/use-dialog-context";
 import { Button, Dialog, DialogContent, DialogHeader, DialogTitle, Textarea } from "@/shared/ui";
-import { editCommentAPI } from "../api/edit-comment";
 import { useCommentContext } from "../models/use-comment-context";
+import { useEditComment } from "../models/use-edit-comment";
 
 export const EditCommentDialog = () => {
-  const { setComments, selectedComment, setSelectedComment } = useCommentContext();
+  const { selectedComment, setSelectedComment } = useCommentContext();
   const { showEditCommentDialog, setShowEditCommentDialog } = useDialogContext();
 
   // 댓글 업데이트
-  const updateComment = async () => {
-    try {
-      if (!selectedComment) return;
-      const data = await editCommentAPI(selectedComment.id, selectedComment.body);
-      setComments((prev) => ({
-        ...prev,
-        [data.postId]: prev[data.postId].map((comment) => (comment.id === data.id ? data : comment)),
-      }));
-      setShowEditCommentDialog(false);
-    } catch (error) {
-      console.error("댓글 업데이트 오류:", error);
-    }
+  const { mutate: editComment } = useEditComment();
+  const handleEditComment = async () => {
+    if (!selectedComment) return;
+    editComment({ ...selectedComment });
   };
 
   return (
@@ -34,7 +26,7 @@ export const EditCommentDialog = () => {
             value={selectedComment?.body || ""}
             onChange={(e) => setSelectedComment((prev) => (prev ? { ...prev, body: e.target.value } : null))}
           />
-          <Button onClick={updateComment}>댓글 업데이트</Button>
+          <Button onClick={handleEditComment}>댓글 업데이트</Button>
         </div>
       </DialogContent>
     </Dialog>

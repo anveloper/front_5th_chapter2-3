@@ -1,8 +1,6 @@
 import { Post } from "@/entities/post/models";
-import { fetchUserAPI } from "@/entities/user/api/fetch-user";
-import { User } from "@/entities/user/models/user.types";
 import { useFetchComments } from "@/features/comments/models/use-fetch-comments";
-import { useUserContext } from "@/features/users/models/use-user-context";
+import { useFetchUser } from "@/features/users/models/use-fatch-user";
 import { highlightText } from "@/shared/lib/highlight-text";
 import { Button, TableCell, TableRow } from "@/shared/ui";
 import { Edit2, MessageSquare, ThumbsDown, ThumbsUp, Trash2 } from "lucide-react";
@@ -19,8 +17,7 @@ type PostsTableRowProps = {
 export const PostsTableRow = ({ post }: PostsTableRowProps) => {
   const { searchQuery, selectedTag, setSelectedTag } = useURLContext();
   const { setSelectedPost } = usePostContext();
-  const { setShowEditDialog, setShowPostDetailDialog, setShowUserModal } = useDialogContext();
-  const { setSelectedUser } = useUserContext();
+  const { setShowEditDialog, setShowPostDetailDialog } = useDialogContext();
 
   const { mutate: deletePost } = useDeletePost();
 
@@ -34,16 +31,11 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
     setShowPostDetailDialog(true);
   };
 
-  // 사용자 모달 열기
-  const openUserModal = async (user?: User) => {
-    if (!user) return;
-    try {
-      const userData = await fetchUserAPI(user.id);
-      setSelectedUser(userData);
-      setShowUserModal(true);
-    } catch (error) {
-      console.error("사용자 정보 가져오기 오류:", error);
-    }
+  // 작성자 상세 모달
+  const { mutate: fetchUser } = useFetchUser();
+  const handleUserModal = (author?: Post["author"]) => {
+    if (!author) return;
+    fetchUser(author.id);
   };
 
   // 게시물 삭제
@@ -79,7 +71,7 @@ export const PostsTableRow = ({ post }: PostsTableRowProps) => {
         </div>
       </TableCell>
       <TableCell>
-        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => openUserModal(post.author)}>
+        <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleUserModal(post.author)}>
           <img src={post.author?.image} alt={post.author?.username} className="w-8 h-8 rounded-full" />
           <span>{post.author?.username}</span>
         </div>

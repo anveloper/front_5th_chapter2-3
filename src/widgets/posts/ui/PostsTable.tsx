@@ -1,6 +1,6 @@
 import { usePostContext } from "@/features/posts/models/use-post-context";
+import { PostsTableRow } from "@/features/posts/ui/PostsTableRow";
 import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/shared/ui";
-import { PostsTableRow } from "./PostsTableRow";
 
 export const PostsTable = () => {
   const { loading, posts } = usePostContext();

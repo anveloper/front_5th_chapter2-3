@@ -1,8 +1,8 @@
-import { PostsHeader } from "@/features/posts/ui/PostsHeader";
-import { PostsPagination } from "@/features/posts/ui/PostsPagination";
 import { PostsSearchHeader } from "@/features/posts/ui/PostsSearchHeader";
-import { PostsTable } from "@/features/posts/ui/PostsTable";
 import { PostsDialogs } from "@/widgets/posts/ui/PostsDialogs";
+import { PostsHeader } from "@/widgets/posts/ui/PostsHeader";
+import { PostsPagination } from "@/widgets/posts/ui/PostsPagination";
+import { PostsTable } from "@/widgets/posts/ui/PostsTable";
 import { Card, CardContent, CardHeader } from "../shared/ui";
 
 const PostsManager = () => {

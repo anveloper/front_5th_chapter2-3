@@ -5,17 +5,20 @@ import { highlightText } from "@/shared/lib/highlight-text";
 import { Button } from "@/shared/ui";
 import { Edit2, ThumbsUp, Trash2 } from "lucide-react";
 import { useCommentContext } from "../models/use-comment-context";
+import { useDeleteComment } from "../models/use-delete-comment";
+import { useLikeComment } from "../models/use-like-comment";
 
 type CommentItemProps = {
   comment: Comment;
-  likeComment: (id: Comment["id"]) => Promise<void>;
-  deleteComment: (id: Comment["id"]) => Promise<void>;
 };
 
-export const CommentItem = ({ comment, likeComment, deleteComment }: CommentItemProps) => {
+export const CommentItem = ({ comment }: CommentItemProps) => {
   const { searchQuery } = useURLContext();
   const { setSelectedComment } = useCommentContext();
   const { setShowEditCommentDialog } = useDialogContext();
+
+  const { mutate: deleteComment } = useDeleteComment();
+  const { mutate: likeComment } = useLikeComment();
 
   if (!comment.user) return null;
   return (
