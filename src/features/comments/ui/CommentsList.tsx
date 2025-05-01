@@ -10,7 +10,7 @@ import { CommentItem } from "./CommentItem";
 
 export const CommentsList = () => {
   const { selectedPost } = usePostContext();
-  const { comments, setComments, setNewComment } = useCommentContext();
+  const { comments, setComments } = useCommentContext();
   const { setShowAddCommentDialog } = useDialogContext();
   const postId = selectedPost?.id || 0;
 
@@ -52,7 +52,6 @@ export const CommentsList = () => {
         <Button
           size="sm"
           onClick={() => {
-            setNewComment((prev) => ({ ...prev, postId }));
             setShowAddCommentDialog(true);
           }}
         >

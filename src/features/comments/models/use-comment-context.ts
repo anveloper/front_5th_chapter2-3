@@ -1,4 +1,4 @@
-import { Comment, CommentsMap, NewComment } from "@/entities/comment/models/comment.types";
+import { Comment, CommentsMap } from "@/entities/comment/models/comment.types";
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 type CommentContextType = {
@@ -6,8 +6,6 @@ type CommentContextType = {
   setComments: Dispatch<SetStateAction<CommentsMap>>;
   selectedComment: Comment | null;
   setSelectedComment: Dispatch<SetStateAction<Comment | null>>;
-  newComment: NewComment;
-  setNewComment: Dispatch<SetStateAction<NewComment>>;
 };
 
 export const CommentContext = createContext<CommentContextType | null>(null);
